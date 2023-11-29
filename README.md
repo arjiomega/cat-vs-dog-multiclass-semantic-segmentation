@@ -13,11 +13,30 @@ Instructions
 5. Put the raw data in `data/raw`.
 6. To save the raw data to the DVC cache, run `dvc add data/raw`
 7. Edit the code files to your heart's desire.
+
+a. git add .
+b. git commit -m "Import raw dataset and notebooks"
+c. git push origin {branch_name}
+d. dvc remote add origin https://dagshub.com/arjiomega/cat-vs-dog-multiclass-semantic-segmentation.dvc
+e. use s3 instead
+    dvc remote modify origin --local auth basic 
+    dvc remote modify origin --local user arjiomega 
+    dvc remote modify origin --local password {token} 
+    dvc push -r origin
+
+pip install dvc-s3
+
+
 8. Process your data, train and evaluate your model using `dvc repro` or `make reproduce`
 9. To run the pre-commit hooks, run `make pre-commit-install`
 10. For setting up data validation tests, run `make setup-setup-data-validation`
 11. For **running** the data validation tests, run `make run-data-validation`
 12. When you're happy with the result, commit files (including .dvc files) to git.
+
+SETUP FOR CODE
+export PYTHONPATH=/mnt/c/Users/rjome/Documents/Machine_Learning/cat-vs-dog-multiclass-semantic-segmentation:$PYTHONPATH
+https://www.geeksforgeeks.org/pythonpath-environment-variable-in-python/
+
 
 Project Organization
 ------------
@@ -68,12 +87,3 @@ Project Organization
 
 
 --------
-
-<p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
-
-
----
-
-To create a project like this, just go to https://dagshub.com/repo/create and select the **Cookiecutter DVC** project template.
-
-Made with 🐶 by [DAGsHub](https://dagshub.com/).
