@@ -1,0 +1,6 @@
+{
+    "random_seed": 5,
+    "train_split": 0.9,
+    "valid_split": 0.08,
+    "test_split": 0.02
+}

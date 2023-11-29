@@ -1,5 +1,5 @@
 import numpy as np
-from src.data.data_utils import load_raw_data, load_specie_dict, remove_unlabeled, preprocess
+from src.data.data_utils import load_data, load_specie_dict, remove_unlabeled, preprocess
 
 
 
@@ -7,7 +7,7 @@ class TestLoadData:
     @classmethod
     def setup_class(cls):
         """Called before every class initialization."""
-        cls.img_list, cls.mask_list = load_raw_data.load()
+        cls.img_list, cls.mask_list = load_data.load()
         cls.specie_dict = load_specie_dict.load()
         cls.img_list, cls.mask_list = remove_unlabeled.remove(cls.img_list, cls.mask_list,cls.specie_dict) # type: ignore
 
@@ -48,10 +48,7 @@ class TestPreprocess:
 
         expected_output = np.array([[1,0,1],[1,1,1],[0,0,1]])
 
-        print(test_fix_mask)
-        print(expected_output)
-
-        assert (test_fix_mask == expected_output).all(), "fix fail"
+        assert (test_fix_mask == expected_output).all(), "expected array not met"
 
     def test_save(self):
         pass
