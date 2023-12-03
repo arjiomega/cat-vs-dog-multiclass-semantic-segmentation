@@ -16,3 +16,10 @@ PROCESSED_MASK_DIR = Path(PROCESSED_DATA_DIR,"mask")
 # Generate Directories
 PROCESSED_IMG_DIR.mkdir(parents=True,exist_ok=True)
 PROCESSED_MASK_DIR.mkdir(parents=True,exist_ok=True)
+
+# Config
+CONFIG_DIR = Path(BASE_DIR,"config")
+
+# Reports
+REPORTS_DIR = Path(BASE_DIR,"reports")
+FIGURE_DIR = Path(REPORTS_DIR,"figures")

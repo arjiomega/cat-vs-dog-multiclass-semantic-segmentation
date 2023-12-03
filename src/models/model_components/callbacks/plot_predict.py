@@ -1,8 +1,11 @@
+from pathlib import Path
+
 import mlflow
 import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
 
+from config import config
 
 class plot_predict_per_epoch(tf.keras.callbacks.Callback):
     def __init__(self,model,sample_img,sample_mask,threshold=0.5):
@@ -54,10 +57,11 @@ class plot_predict_per_epoch(tf.keras.callbacks.Callback):
 
         return fig
 
-    def log_to_mlflow(self,fig,epoch):
-        mlflow.log_figure(fig,f'predict_plots/predict_plot_epoch_{epoch}.png')
-
+    def save_fig(self,fig,epoch):
+        file_name = f"predict_plot_epoch_{epoch}.png"
+        fig.savefig(fname=Path(config.FIGURE_DIR,file_name),
+                     format='png')
+        
     def on_epoch_end(self,epoch,logs=None):
-      
         fig = self.gen_plot()
-        self.log_to_mlflow(fig,epoch)
+        self.save_fig(fig,epoch)
