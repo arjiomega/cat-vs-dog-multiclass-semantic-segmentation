@@ -1,5 +1,6 @@
 # external requirements
 dvc==3.30.1
+dvc-s3==2.23.0
 pre-commit==2.20.0
 great_expectations==0.15.23
 

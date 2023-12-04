@@ -59,6 +59,10 @@ pull:
 reproduce:
 	dvc repro
 
+## WSL2 cant keep the right time when pc/laptop goes to sleep (Note: run with sudo, sudo make update_time)
+update_time:
+	date -s "$(wget -qSO- --max-redirect=0 google.com 2>&1 | grep Date: | cut -d' ' -f5-8)Z"
+
 #################################################################################
 # PROJECT RULES                                                                 #
 #################################################################################
