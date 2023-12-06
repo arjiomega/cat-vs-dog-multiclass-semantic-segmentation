@@ -22,6 +22,6 @@
     },
     "experiment": {
         "experiment_name": "Cat vs Dog Semantic Segmentation",
-        "run_name": "Test run mlflow multiple setups 1"
+        "run_name": "Test run mlflow multiple setups and metric output 1"
     }
 }

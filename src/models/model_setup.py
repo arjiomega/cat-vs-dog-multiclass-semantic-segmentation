@@ -11,7 +11,8 @@ def get_metric(get:str):
     return {
         "IoU": metrics.IoU,
         "sensitivity":metrics.sensitivity,
-        "specificity":metrics.specificity
+        "specificity":metrics.specificity,
+        "classification_metrics": metrics.classification_metrics
     }[get]
     
 def get_loss(get:str):

@@ -48,6 +48,7 @@ def load_model(args):
 
 if __name__ == '__main__':
     
+    # test first if the args contain the required arguments
     args = load_args.load_args(config.CONFIG_DIR,"args.json") 
 
     train_set, valid_set, test_set = load_data(args)
@@ -55,9 +56,7 @@ if __name__ == '__main__':
 
     # should be debugging dataset (dark images, light images, combined image of cat)
     img,mask = valid_set.dataset[50]
-
-    # start_run before training can be a bad practice according to mlflow (look documentation)
-    # don't log predict plot real time or look for alternatives
+    
     experiment = TrackExperiment(tracking_uri=os.environ.get('MLFLOW_TRACKING_URI'),
                                  experiment_name=args['experiment']['experiment_name'],
                                  run_name=args['experiment']['run_name'],
@@ -71,16 +70,8 @@ if __name__ == '__main__':
  
     custom_objects = {metric:model_setup.get_metric(get=metric) for metric in args['setup']['metrics']}
     custom_objects[args['experiment']['loss']] = model_setup.get_loss(get=args['setup']['loss'])
- 
-    custom_objects = {
-        "DiceLoss":loss.DiceLoss(),
-        "IoU":metrics.IoU,
-        "classification_metrics":metrics.classification_metrics,
-        "sensitivity":metrics.sensitivity,
-        "specificity":metrics.specificity
-    }
+    custom_objects["classification_metrics"] = model_setup.get_metric(get="classification_metrics") # required for other metrics
  
     experiment.log_experiment(custom_objects=custom_objects, 
                               artifact_path='model', 
                               fig_path=config.FIGURE_DIR)
- 
