@@ -19,12 +19,49 @@ def classification_metrics(y_true,y_pred, threshold=0.5):
 
     return (TP,TN,FP,FN)
 
-def IoU(y_true, y_pred, smooth=1e-6):
-  # intersection returns a shape of (n_samples,) because everything is summed
-  intersection = tf.math.reduce_sum(tf.abs(y_true * y_pred), axis=(1,2,3))
-  union = tf.math.reduce_sum(y_true,axis=(1,2,3))+tf.math.reduce_sum(y_pred,axis=(1,2,3))-intersection
-  iou = tf.math.reduce_mean((intersection + smooth) / (union + smooth), axis=0)
-  return iou
+def IoU(y_true:tf.Tensor,y_pred:tf.Tensor,smooth=1e-6):
+    """
+    Calculates Intersection over Union (IoU) metric.
+
+    Parameters:
+    - y_true : tensor
+        Ground truth labels (true masks).
+    - y_pred : tensor
+        Predicted labels (predicted masks).
+    - smooth : float, optional
+        Smoothing factor to avoid division by zero, defaults to 1e-6.
+
+    Returns:
+    - float
+        IoU value for the entire batch.
+
+    This function calculates the IoU metric to measure the similarity
+    between the ground truth and predicted masks for a batch of data.
+    The IoU is computed as the ratio of the intersection to the union
+    of the true and predicted masks.
+    """
+    
+    # calculate intersection of each classes per batch
+    # shape (batchsize,n_classes)
+    intersection = tf.math.reduce_sum(tf.abs(y_true * y_pred), axis=(1,2))
+    
+    # calculate union of each classes per batch
+    # shape (batchsize,n_classes)
+    union = tf.math.reduce_sum(y_true,axis=(1,2))+tf.math.reduce_sum(y_pred,axis=(1,2))-intersection
+    
+    # calculate iou of each class per batch
+    # shape (batchsize,n_classes)
+    iou = (intersection + smooth) / (union + smooth)
+    
+    # calculate iou for each batch 
+    # shape (batchsize,)
+    iou = tf.math.reduce_mean(iou, axis=-1)
+    
+    # calculate iou for the whole batch
+    # shape ()
+    iou = tf.math.reduce_mean(iou)
+    
+    return iou
 
 def sensitivity(y_true, y_pred,threshold=0.5,smooth=1e-6):
     
