@@ -14,7 +14,8 @@ from src.experiment_tracking.track_experiment import TrackExperiment
 
 from src.models.model_components.callbacks import plot_predict
 from src.models.model_components import loss_functions as loss, metrics
-from src.models.model_components.architectures import vgg16_unet
+
+import model_setup
 
 def load_data(args):
     
@@ -30,13 +31,18 @@ def load_data(args):
     return train_set, valid_set, test_set
 
 def load_model(args):
-    learning_rate = args['learning_rate']
+    learning_rate = args['params']['learning_rate']
     
-    model = vgg16_unet.VGG16_Unet(n_classes = 3)
+    model = model_setup.get_model(get=args['setup']['model'],
+                                  n_classes=args['setup']['n_classes'])
+    
+    loss = model_setup.get_loss(get=args['setup']['loss'])
+    
+    metrics = [model_setup.get_metric(get=metric) for metric in args['setup']['metrics']]
     
     model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate),
-        loss=loss.DiceLoss(),
-        metrics=[metrics.IoU,metrics.sensitivity,metrics.specificity])
+        loss=loss,
+        metrics=metrics)
 
     return model
 
@@ -45,7 +51,7 @@ if __name__ == '__main__':
     args = load_args.load_args(config.CONFIG_DIR,"args.json") 
 
     train_set, valid_set, test_set = load_data(args)
-    model = load_model(args['params'])
+    model = load_model(args)
 
     # should be debugging dataset (dark images, light images, combined image of cat)
     img,mask = valid_set.dataset[50]
@@ -53,8 +59,8 @@ if __name__ == '__main__':
     # start_run before training can be a bad practice according to mlflow (look documentation)
     # don't log predict plot real time or look for alternatives
     experiment = TrackExperiment(tracking_uri=os.environ.get('MLFLOW_TRACKING_URI'),
-                                 experiment_name="Cat vs Dog Semantic Segmentation",
-                                 run_name="Test run mlflow setup",
+                                 experiment_name=args['experiment']['experiment_name'],
+                                 run_name=args['experiment']['run_name'],
                                  args=args)
 
     callbacks = [tf.keras.callbacks.ReduceLROnPlateau(),
@@ -62,6 +68,9 @@ if __name__ == '__main__':
                  ]
 
     experiment.fit(model,train_set,valid_set,callbacks)
+ 
+    custom_objects = {metric:model_setup.get_metric(get=metric) for metric in args['setup']['metrics']}
+    custom_objects[args['experiment']['loss']] = model_setup.get_loss(get=args['setup']['loss'])
  
     custom_objects = {
         "DiceLoss":loss.DiceLoss(),

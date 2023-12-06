@@ -3,6 +3,7 @@
         "model": "VGG16-Unet",
         "loss": "DiceLoss",
         "metrics": ["IoU","sensitivity","specificity"],
+        "n_classes": 3,
         "random_seed": 5,
         "train_split": 0.9,
         "valid_split": 0.08,
@@ -18,5 +19,9 @@
         "encoder": "VGG16",
         "loss": "custom DiceLoss",
         "data split": "imbalance"
+    },
+    "experiment": {
+        "experiment_name": "Cat vs Dog Semantic Segmentation",
+        "run_name": "Test run mlflow multiple setups 1"
     }
 }
