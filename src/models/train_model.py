@@ -1,21 +1,14 @@
 import os
 from pathlib import Path
 
-import mlflow
-import numpy as np
 import tensorflow as tf
 
-from config import config
-from src.data.data_utils import load_label_dict, load_list, load_args
-
-from src.data.load import load
-
-from src.experiment_tracking.track_experiment import TrackExperiment
-
-from src.models.model_components.callbacks import plot_predict
-from src.models.model_components import loss_functions as loss, metrics
-
 import model_setup
+from config import config
+from src.data.load import load
+from src.models.model_components.callbacks import plot_predict
+from src.experiment_tracking.track_experiment import TrackExperiment
+from src.data.data_utils import load_label_dict, load_list, load_args
 
 def load_data(args):
     
@@ -47,7 +40,6 @@ def load_model(args):
     return model
 
 if __name__ == '__main__':
-    
     # test first if the args contain the required arguments
     args = load_args.load_args(config.CONFIG_DIR,"args.json") 
 
@@ -58,20 +50,21 @@ if __name__ == '__main__':
     img,mask = valid_set.dataset[50]
     
     experiment = TrackExperiment(tracking_uri=os.environ.get('MLFLOW_TRACKING_URI'),
-                                 experiment_name=args['experiment']['experiment_name'],
-                                 run_name=args['experiment']['run_name'],
-                                 args=args)
+                                experiment_name=args['experiment']['experiment_name'],
+                                run_name=args['experiment']['run_name'],
+                                args=args)
 
     callbacks = [tf.keras.callbacks.ReduceLROnPlateau(),
-                 plot_predict.plot_predict_per_epoch(model,img,mask)
-                 ]
+                plot_predict.plot_predict_per_epoch(model,img,mask)
+                ]
 
     experiment.fit(model,train_set,valid_set,callbacks)
- 
+    experiment.evaluate(test_set)
+
     custom_objects = {metric:model_setup.get_metric(get=metric) for metric in args['setup']['metrics']}
-    custom_objects[args['experiment']['loss']] = model_setup.get_loss(get=args['setup']['loss'])
+    custom_objects[args['setup']['loss']] = model_setup.get_loss(get=args['setup']['loss'])
     custom_objects["classification_metrics"] = model_setup.get_metric(get="classification_metrics") # required for other metrics
- 
+
     experiment.log_experiment(custom_objects=custom_objects, 
-                              artifact_path='model', 
-                              fig_path=config.FIGURE_DIR)
+                            artifact_path='model', 
+                            fig_path=config.FIGURE_DIR)
