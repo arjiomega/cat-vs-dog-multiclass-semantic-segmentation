@@ -11,6 +11,7 @@ class TrackExperiment:
         self.experiment_name = experiment_name
         self.run_name = run_name
         
+        self.metric_labels = args['setup']['metrics']
         self.epochs = args['params']['epochs']
         self.params = args['params']
         self.tags = args['tags']
@@ -31,9 +32,17 @@ class TrackExperiment:
         self.model_signature_input, _ = valid_set.dataset[50] # change this to debug set
         self.metrics = model_history.history
         
+    def evaluate(self,test_set):
+        # results = [loss, metrics1, metrics2, metrics_n]
+        results = self.model.evaluate(test_set)
+        
+        self.test_metrics = {f"test_{label}":score for label,score in zip(self.metric_labels,results[1:])}
+        self.test_metrics['test_loss'] = results[0]
+        
     def log_experiment(self,custom_objects,artifact_path,fig_path):
         with mlflow.start_run(run_name=self.run_name):
             self.log_metrics(self.metrics,self.epochs)
+            self.log_test_metrics()
             self.log_params(self.params)
             self.log_tags(self.tags)
             self.log_figures(fig_path)
@@ -46,6 +55,9 @@ class TrackExperiment:
         for i in range(epochs):
             for metric,score in metrics.items():
                 mlflow.log_metric(metric,score[i],step=i)
+    
+    def log_test_metrics(self):
+        mlflow.log_metrics(self.test_metrics)
         
     def log_tags(self,tags):
         mlflow.set_tags(tags)
@@ -55,7 +67,7 @@ class TrackExperiment:
         
         for figure in figure_list:
             file = Path(fig_path,figure)
-            mlflow.log_artifact(file,f'predict_plots/{figure}')
+            mlflow.log_artifact(file,f'predict_plots')
         
     def load_model_signature(self,img,model):
         input_signature = np.expand_dims(img, axis=0)
