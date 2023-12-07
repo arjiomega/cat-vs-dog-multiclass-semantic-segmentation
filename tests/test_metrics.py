@@ -9,7 +9,7 @@ from src.models.model_components import metrics
 tf.random.set_seed(5)
 np.random.seed(5)
 
-def test_IoU():
+def test_IoU_output():
     """
     Test the Intersection over Union (IoU) metric calculation.
 
@@ -37,3 +37,5 @@ def test_IoU():
     
     assert round(float(iou.numpy()),4) == 0.3375, "Wrong implementation if IoU"
     
+def test_IoU_shape():
+    pass
