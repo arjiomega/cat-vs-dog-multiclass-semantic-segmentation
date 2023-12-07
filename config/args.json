@@ -17,11 +17,11 @@
     "tags": {
         "base_model": "UNet",
         "encoder": "VGG16",
-        "loss": "custom DiceLoss",
+        "loss": "DiceLoss",
         "data split": "imbalance"
     },
     "experiment": {
         "experiment_name": "Cat vs Dog Semantic Segmentation",
-        "run_name": "Test run mlflow multiple setups and metric output 1"
+        "run_name": "Test run 5 repoducibility fix 7d 3 runs"
     }
 }
