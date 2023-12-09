@@ -10,7 +10,7 @@
         "test_split": 0.02
     },
     "params": {
-        "learning_rate": 1e-4,
+        "learning_rate": 1e-5,
         "batch_size": 16,
         "epochs": 1
     },
@@ -18,10 +18,11 @@
         "base_model": "UNet",
         "encoder": "VGG16",
         "loss": "DiceLoss",
-        "data split": "imbalance"
+        "data split": "imbalance",
+        "trained on": "local rtx4060 8gb vram"
     },
     "experiment": {
-        "experiment_name": "Cat vs Dog Semantic Segmentation",
-        "run_name": "Test run 5 repoducibility fix 7d 3 runs"
+        "experiment_name": "Pet Semantic Segmentation",
+        "run_name": "run 4: fix attempt 3 for continuing training from mlflow artifacts"
     }
 }

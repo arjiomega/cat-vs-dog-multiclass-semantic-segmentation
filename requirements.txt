@@ -5,7 +5,7 @@ pre-commit==2.20.0
 great_expectations==0.15.23
 
 numpy==1.26.1
-tensorflow[and-cuda]
+tensorflow[and-cuda]==2.14.0
 opencv-python==4.8.1.78
 matplotlib==3.8.1
 pandas==2.1.3

@@ -3,7 +3,6 @@ from pathlib import Path
 
 import mlflow
 import numpy as np
-from PIL import Image
 
 class TrackExperiment:
     def __init__(self,tracking_uri,experiment_name,run_name,args):
@@ -16,9 +15,6 @@ class TrackExperiment:
         self.params = args['params']
         self.tags = args['tags']
         
-        mlflow.set_tracking_uri(tracking_uri)
-        mlflow.set_experiment(experiment_name)
-        
     def fit(self,model,train_set,valid_set,callbacks):
         model_history = model.fit(train_set,
                                   steps_per_epoch = len(train_set),
@@ -27,7 +23,6 @@ class TrackExperiment:
                                   validation_data = valid_set,
                                   validation_steps = len(valid_set)
                                   )
-        
         self.model = model
         self.model_signature_input, _ = valid_set.dataset[50] # change this to debug set
         self.metrics = model_history.history
@@ -40,6 +35,10 @@ class TrackExperiment:
         self.test_metrics['test_loss'] = results[0]
         
     def log_experiment(self,custom_objects,artifact_path,fig_path):
+        
+        mlflow.set_tracking_uri(self.tracking_uri)
+        mlflow.set_experiment(self.experiment_name)
+        
         with mlflow.start_run(run_name=self.run_name):
             self.log_metrics(self.metrics,self.epochs)
             self.log_test_metrics()
