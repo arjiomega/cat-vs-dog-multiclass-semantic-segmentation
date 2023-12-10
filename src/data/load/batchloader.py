@@ -26,7 +26,7 @@ class BatchLoader(tf.keras.utils.Sequence):
         self.batch_size = batch_size
         self.shuffle = shuffle
 
-        self.indexes = np.arange(self.dataset_size)
+        self.indices = np.arange(self.dataset_size)
 
         self.on_epoch_end()
 
@@ -54,10 +54,8 @@ class BatchLoader(tf.keras.utils.Sequence):
         
         start = i * self.batch_size
         stop = (i+1) * self.batch_size
-        data = []
-
-        for j in range(start,stop):
-            data.append(self.dataset[j])
+        data_indices = self.indices[start:stop]
+        data = [self.dataset[j] for j in data_indices]
 
         # data = [(img1,mask1),(img2,mask2),...]
         # batch = [stack of images, stack of masks] 
@@ -73,4 +71,4 @@ class BatchLoader(tf.keras.utils.Sequence):
         """
         
         if self.shuffle == True:
-            np.random.shuffle(self.indexes)
+            np.random.shuffle(self.indices)
