@@ -1,7 +1,7 @@
 import tensorflow as tf
 
 class DiceLoss(tf.keras.losses.Loss):
-    def __init__(self, name="DiceLoss", smooth=1e-7, gamma=2, **kwargs):
+    def __init__(self, name="DiceLoss", smooth=1e-7, gamma=1.0, **kwargs):
         super(DiceLoss, self).__init__(**kwargs)
         self.name = name
         self.smooth = smooth
