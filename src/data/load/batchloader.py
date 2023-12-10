@@ -54,7 +54,9 @@ class BatchLoader(tf.keras.utils.Sequence):
         
         start = i * self.batch_size
         stop = (i+1) * self.batch_size
+        
         data_indices = self.indices[start:stop]
+        
         data = [self.dataset[j] for j in data_indices]
 
         # data = [(img1,mask1),(img2,mask2),...]
