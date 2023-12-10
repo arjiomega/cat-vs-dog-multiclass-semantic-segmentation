@@ -1,4 +1,5 @@
 import os
+import argparse
 from pathlib import Path
 
 import tensorflow as tf
@@ -40,8 +41,15 @@ def load_model(args):
     return model
 
 if __name__ == '__main__':
-    # test first if the args contain the required arguments
-    args = load_args.load_args(config.CONFIG_DIR,"args.json") 
+    
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--train_args',dest='train_args',type=str,help="json filename in config dir containing the training setup. Ex. 'setup1.json'")
+    args = parser.parse_args()
+    
+    if args.train_args:
+        args = load_args.load_args(config.CONFIG_DIR,args.train_args) 
+    else:
+        parser.error("training setup file is required.")
 
     train_set, valid_set, test_set = load_data(args)
     model = load_model(args)
@@ -54,7 +62,7 @@ if __name__ == '__main__':
                                 run_name=args['experiment']['run_name'],
                                 args=args)
 
-    callbacks = [tf.keras.callbacks.ReduceLROnPlateau(),
+    callbacks = [tf.keras.callbacks.ReduceLROnPlateau(patience=5,factor=0.2),
                 plot_predict.plot_predict_per_epoch(model,img,mask)
                 ]
 
