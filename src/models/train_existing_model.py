@@ -26,11 +26,25 @@ def load_data(args):
     
     return train_set, valid_set, test_set
 
+def load_trained_model(model,args):
+    learning_rate = args['params']['learning_rate']
+    
+    loss = model_setup.get_loss(get=args['setup']['loss'])
+    
+    metrics = [model_setup.get_metric(get=metric) for metric in args['setup']['metrics']]
+    
+    model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate),
+        loss=loss,
+        metrics=metrics)
+
+    return model
+
 if __name__ == "__main__":
     
     parser = argparse.ArgumentParser()
     parser.add_argument('--train_args',dest='train_args',type=str,help="json filename in config dir containing the training setup. Ex. 'setup1.json'")
     parser.add_argument('--model_uri',dest='model_uri',type=str,help="model_uri can be found in mlflow experiment run artifacts")
+    parser.add_argument('--tune_layers',dest='tune_layers',type=int,help="number of layers to be unfreezed starting from the end of pretrained model")
     input_args = parser.parse_args()
     
     if input_args.train_args and input_args.model_uri:
@@ -44,6 +58,16 @@ if __name__ == "__main__":
     # Load previously trained model from mlflow experiment run artifact
     model = mlflow.tensorflow.load_model(model_uri)
     
+    if input_args.tune_layers:
+        LAYERS_TO_TUNE = input_args.tune_layers
+        pretrained_model = model.layers[1]
+        
+        # loop starting from the end
+        for layer in pretrained_model.layers[::-1][:LAYERS_TO_TUNE]:
+            layer.trainable = True
+            
+        model = load_trained_model(model,args)
+            
     # should be debugging dataset (dark images, light images, combined image of cat)
     img,mask = valid_set.dataset[50]
     
@@ -54,7 +78,7 @@ if __name__ == "__main__":
 
     log_dir = "logs/fit/" + datetime.datetime.now().strftime("%m%d%Y-%H%M%S")
     
-    callbacks = [tf.keras.callbacks.ReduceLROnPlateau(patience=5,factor=0.2),
+    callbacks = [tf.keras.callbacks.ReduceLROnPlateau(),
                 plot_predict.plot_predict_per_epoch(model,img,mask),
                 tf.keras.callbacks.TensorBoard(log_dir=log_dir,histogram_freq=1)
                 ]

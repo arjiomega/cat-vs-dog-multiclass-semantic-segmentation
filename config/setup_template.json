@@ -10,9 +10,9 @@
         "test_split": 0.02
     },
     "params": {
-        "learning_rate": 1e-4,
+        "learning_rate": 1e-6,
         "batch_size": 64,
-        "epochs": 50
+        "epochs": 75
     },
     "tags": {
         "base_model": "UNet",
@@ -23,6 +23,6 @@
     },
     "experiment": {
         "experiment_name": "Pet Semantic Segmentation",
-        "run_name": "Paperspace run 3"
+        "run_name": "Paperspace run 5: finetune run 4"
     }
 }
