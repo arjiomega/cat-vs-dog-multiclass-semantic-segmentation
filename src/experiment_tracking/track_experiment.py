@@ -63,8 +63,8 @@ class TrackExperiment:
         
     def log_figures(self,fig_path):
         figure_list = os.listdir(fig_path)
-        
-        for figure in figure_list:
+
+        for figure in figure_list[:self.epochs]:
             file = Path(fig_path,figure)
             mlflow.log_artifact(file,f'predict_plots')
         
