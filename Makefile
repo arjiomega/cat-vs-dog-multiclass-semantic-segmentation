@@ -63,6 +63,13 @@ reproduce:
 update_time:
 	date -s "$(wget -qSO- --max-redirect=0 google.com 2>&1 | grep Date: | cut -d' ' -f5-8)Z"
 
+train:
+	$(PYTHON_INTERPRETER) src/models/train_model.py --train_args $(TRAIN_ARGS) 
+train_existing:
+	$(PYTHON_INTERPRETER) src/models/train_model.py --train_args $(TRAIN_ARGS) --model_uri $(MODEL_URI)
+train_tune:
+	$(PYTHON_INTERPRETER) src/models/train_model.py --train_args $(TRAIN_ARGS) --model_uri $(MODEL_URI) --tune_layers $(TUNE_LAYERS)
+
 #################################################################################
 # PROJECT RULES                                                                 #
 #################################################################################
