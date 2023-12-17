@@ -1,4 +1,4 @@
-            # Cat and Dog Semantic Segmentation
+# Cat and Dog Semantic Segmentation
 
  Welcome to my Cat and Dog Semantic Segmentation project!
 
