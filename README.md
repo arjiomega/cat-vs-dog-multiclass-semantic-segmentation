@@ -1,4 +1,4 @@
-# Cat and Dog Semantic Segmentation
+            # Cat and Dog Semantic Segmentation
 
  Welcome to my Cat and Dog Semantic Segmentation project!
 
@@ -129,7 +129,7 @@ example run predicting cat and dog in the same image
 ```shell
 python src/models/predict_model.py --img_url https://khpet.com/cdn/shop/articles/introducing-a-dog-to-a-cat-home_800x800.jpg?v=1593020063 --model_uri runs:/<run_id>/model
 ```
-![prediction output](https://imgur.com/a/OzS50w5)
+![prediction_output](https://i.imgur.com/O8A6lYH.png)
 
 The prediction shown above is a great example on the importance of using debugging set so we can see the model's performance on difference scenario since the model is only trained on single cat or dog per image. 
 
