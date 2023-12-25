@@ -18,7 +18,6 @@ Admittedly, pursuing a semantic segmentation project centered around cats and do
 - Annotating new data using label studio
 - Continuous Integration Continuous Deployment
 
-
 ## Environment variables
 Make sure you are inside the project directory
 ```shell
@@ -131,7 +130,19 @@ python src/models/predict_model.py --img_url https://khpet.com/cdn/shop/articles
 ```
 ![prediction_output](https://i.imgur.com/O8A6lYH.png)
 
-The prediction shown above is a great example on the importance of using debugging set so we can see the model's performance on difference scenario since the model is only trained on single cat or dog per image. 
+The prediction shown above is a great example on the importance of using debugging set so we can see the model's performance on difference scenario since the model is only trained on single cat or dog per image. The model is clearly underperforming once both classes are present in a single image.
+
+## Debugging
+
+The images below are the figures generated on how the model performs in specific conditions. The model used for this report is VGG16 UNet trained for a single epoch.
+
+![cats and dogs](https://i.imgur.com/XH8TY2E.png)
+
+![cat breeds](https://i.imgur.com/zvP6gJk.png)
+
+We use the figures above to evaluate on how we can further improve our model by feeding new data on conditions it performs poorly. (The results above are just an example since it was only trained for a single epoch and also dog breeds were not included as of this moment due to the large number of masks needed to be prepared).
+
+
 
 Debugging set can be obtained from the training set or new custom examples which we would like to monitor such as:
 - single cats
@@ -147,11 +158,22 @@ For further information regarding debugging set, Cassie Kozyrkov has a great vid
 ## Data Version Control
 - Use DVC S3 to prevent issues when doing `dvc push` (may be dagshub specific problem)
 
-## Cat vs Dog Dataset
+## Data used
+
+### Cat vs Dog Dataset
 [OXFORD-IIIT PET Dataset](https://www.robots.ox.ac.uk/~vgg/data/pets/)
 
 The base dataset used is the PET Dataset from Oxford. Each of the mask does not differentiate cats or dogs only the border and if a cat or dog exists within that mask.
 
 ![pet dataset image](https://www.robots.ox.ac.uk/~vgg/data/pets/pet_annotations.jpg)
+
+
+
+### Debugging dataset
+
+Data used for manual evaluation of model performance
+
+- [cat breeds](https://www.whiskas.com.ph/cat-breeds)
+- [dog breeds](https://www.akc.org/dog-breeds/)
 
 ------------
