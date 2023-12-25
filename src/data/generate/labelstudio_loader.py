@@ -1,25 +1,29 @@
 from typing import List
 import numpy as np
 
+
 class InputStream:
     def __init__(self, data):
         self.data = data
         self.i = 0
 
     def read(self, size):
-        out = self.data[self.i:self.i + size]
+        out = self.data[self.i : self.i + size]
         self.i += size
         return int(out, 2)
 
+
 def access_bit(data, num):
-    """ from bytes array to bits by num position"""
+    """from bytes array to bits by num position"""
     base = int(num // 8)
     shift = 7 - int(num % 8)
     return (data[base] & (1 << shift)) >> shift
 
+
 def bytes2bit(data):
-    """ get bit string from bytes data"""
-    return ''.join([str(access_bit(data, i)) for i in range(len(data) * 8)])
+    """get bit string from bytes data"""
+    return "".join([str(access_bit(data, i)) for i in range(len(data) * 8)])
+
 
 def rle_to_mask(rle: List[int], height: int, width: int) -> np.array:
     """
