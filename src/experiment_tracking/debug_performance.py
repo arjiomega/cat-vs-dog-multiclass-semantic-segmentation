@@ -125,7 +125,7 @@ class DebuggingReportGenerator:
             filename=image_filename,
             preprocess_list=["resize", "normalize"],
             shape=(224, 224),
-            normalize_range=(-1, 1),
+            normalize_range=(-1.0, 1.0),
         )
         mask = load.load_mask(
             filepath=mask_path,
