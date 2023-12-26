@@ -8,7 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from config import config
-from src.data.new_load import load
+from src.data.load import load
 from src.data.preprocess import preprocess
 from src.data.load import dataloader, batchloader
 
