@@ -16,7 +16,9 @@ class Save:
         """
         self.savepath = savepath
 
-    def save_array(self, array: np.ndarray, savefilename: str, create_dir: Path|str = None):
+    def save_array(
+        self, array: np.ndarray, savefilename: str, create_dir: Path | str = None
+    ):
         """Save either an image or a mask numpy array.
 
         Args:
