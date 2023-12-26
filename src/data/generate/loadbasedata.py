@@ -4,7 +4,7 @@ from pathlib import Path
 import pandas as pd
 
 from config import config
-from src.data.new_load import load
+from src.data.load import load
 from src.data.save import save
 from src.data.preprocess import preprocess
 
