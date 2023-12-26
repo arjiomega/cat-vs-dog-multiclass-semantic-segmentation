@@ -7,7 +7,7 @@ import pandas as pd
 
 from config import config
 from . import labelstudio_loader
-
+from src.data.save import save
 
 class MaskLoader:
     def __init__(self):
@@ -51,11 +51,12 @@ class MaskLoader:
 
 
 class GenCustomData:
-    def __init__(self, json_path: str):
-        self.df = pd.read_json(json_path)
+    def __init__(self, json_path: Path, savepath:Path):
+        self.df = pd.read_json(str(json_path))
         self.preprocess_df()
 
         self.maskloader = MaskLoader()
+        self.saver = save.Save(savepath=savepath)
 
     def gen_image_filename(self, row) -> str:
         image_filename = row["image"].split("/")[-1]
@@ -94,10 +95,10 @@ class GenCustomData:
             lambda row: self.gen_dimension(row)
         )
 
-    def save(self, save_path: str):
+    def save(self):
         for i, row in self.df.iterrows():
             image_filename = row["image_filename"]
-            mask_filename = row["image_filename"].split(".")[0]
+            mask_filename = row["image_filename"].split(".")[0] + ".png"
 
             condition = row["condition"]
 
@@ -109,17 +110,15 @@ class GenCustomData:
             )
 
             # save mask to new directory
-            mask_save_path = Path(save_path, condition, "masks")
-            mask_save_path.mkdir(parents=True, exist_ok=True)
-
-            self.maskloader.mask_saver(
-                mask=mask, file_dir=mask_save_path, file_name=mask_filename
+            self.saver.save_array(
+                array = mask, 
+                savefilename=mask_filename,
+                create_dir=Path(condition,"masks")
             )
-
+            
             # save image to new directory
-            image_save_path = Path(save_path, condition, "images")
-            image_save_path.mkdir(parents=True, exist_ok=True)
-
-            source_img = Path(config.NEW_DATA_DIR, condition, image_filename)
-
-            shutil.copy(src=source_img, dst=image_save_path)
+            self.saver.transfer_file(
+                sourcepath=Path(config.NEW_DATA_DIR, condition),
+                sourcefilename=image_filename,
+                create_dir=Path(condition,"images")
+            )
