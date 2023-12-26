@@ -11,11 +11,11 @@ from src.data.preprocess import preprocess
 
 
 def load_image(
-    filepath: str,
+    filepath: Path|str,
     filename: str,
     preprocess_list: list[str] = [],
     shape: tuple[int, int] = None,
-    normalize_range: tuple[int | float, int | float] = None,
+    normalize_range: tuple[float, float] = None,
 ) -> np.ndarray:
     fullpath = Path(filepath, filename)
 
