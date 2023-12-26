@@ -50,7 +50,8 @@ if __name__ == "__main__":
     )
 
     # load data from label data
-    annotation_path = str(Path(config.NEW_DATA_DIR, "annotations.json"))
-    gen_custom_data = gencustomdata.GenCustomData(json_path=annotation_path)
-    save_path = Path(config.PROCESSED_DATA_DIR, "debugging_set")
-    gen_custom_data.save(save_path=save_path)
+    gen_custom_data = gencustomdata.GenCustomData(
+        json_path=Path(config.NEW_DATA_DIR, "annotations.json"),
+        savepath=Path(config.PROCESSED_DATA_DIR, "debugging_set")
+    )
+    gen_custom_data.save()
