@@ -9,6 +9,7 @@ from config import config
 from . import labelstudio_loader
 from src.data.save import save
 
+
 class MaskLoader:
     def __init__(self):
         pass
@@ -51,7 +52,7 @@ class MaskLoader:
 
 
 class GenCustomData:
-    def __init__(self, json_path: Path, savepath:Path):
+    def __init__(self, json_path: Path, savepath: Path):
         self.df = pd.read_json(str(json_path))
         self.preprocess_df()
 
@@ -111,14 +112,14 @@ class GenCustomData:
 
             # save mask to new directory
             self.saver.save_array(
-                array = mask, 
+                array=mask,
                 savefilename=mask_filename,
-                create_dir=Path(condition,"masks")
+                create_dir=Path(condition, "masks"),
             )
-            
+
             # save image to new directory
             self.saver.transfer_file(
                 sourcepath=Path(config.NEW_DATA_DIR, condition),
                 sourcefilename=image_filename,
-                create_dir=Path(condition,"images")
+                create_dir=Path(condition, "images"),
             )
