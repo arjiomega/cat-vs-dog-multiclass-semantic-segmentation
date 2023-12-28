@@ -55,7 +55,9 @@ class LoadBaseData:
 
         return train_set, valid_set, test_set
 
-    def load_datasets(self) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    def load_datasets(
+        self, datasplit: tuple[float, float, float]
+    ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         df = self.load_dataframe()
 
         # separate by class
@@ -67,8 +69,8 @@ class LoadBaseData:
         random.shuffle(dogs)
 
         # split class
-        train_cat, valid_cat, test_cat = self.data_splitter(cats)
-        train_dog, valid_dog, test_dog = self.data_splitter(dogs)
+        train_cat, valid_cat, test_cat = self.data_splitter(cats, *datasplit)
+        train_dog, valid_dog, test_dog = self.data_splitter(dogs, *datasplit)
 
         # combine classes
         train_set = train_cat + train_dog
@@ -89,10 +91,8 @@ class LoadBaseData:
         savepath: Path,
     ):
         datasets_list = [train_set, valid_set, test_set]
-        datasets_savepath_list = [
-            Path(savepath, dataset)
-            for dataset in ["train_set", "valid_set", "test_set"]
-        ]
+        dataset_names = ["train_set", "valid_set", "test_set"]
+        datasets_savepath_list = [Path(savepath, dataset) for dataset in dataset_names]
 
         saver = save.Save(savepath=savepath)
 
