@@ -2,7 +2,7 @@ dvc==3.36.1
 dvc-s3==3.0.1
 flake8==6.1.0
 matplotlib==3.8.2
-mlflow==2.9.2
+mlflow[extras]==2.9.2
 numpy==1.26.2
 opencv-python==4.8.1.78
 pandas==2.1.4
