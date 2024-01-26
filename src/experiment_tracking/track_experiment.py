@@ -95,4 +95,15 @@ class TrackExperiment:
             custom_objects=custom_objects,
             artifact_path=artifact_path,
             signature=signature,
+            conda_env={
+                "name": "mlflow-env",
+                "channels": ["conda-forge"],
+                "dependencies": [
+                    "python=3.10",
+                    "pip=23.3.1",
+                    {"pip": [
+                        "mlflow==2.9.2",
+                        "tensorflow==2.15.0.post1"],}
+                ],
+            }
         )
