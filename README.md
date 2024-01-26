@@ -1,79 +1,179 @@
-cat-vs-dog-multiclass-semantic-segmentation
-==============================
+# Cat and Dog Semantic Segmentation
+
+ Welcome to my Cat and Dog Semantic Segmentation project!
+
+## Project Introduction
+
+### Overview:
+This project focuses on semantic segmentation to accurately identify and differentiate cats and dogs within images. While there are several existing semantic segmentation datasets like Cityscapes, this project stands out by offering a unique opportunity to easily implement debugging set, a concept highlighted by [Cassie Kozyrkov](https://www.youtube.com/watch?v=BynidpRMZkc&t=1s) from Google, easily as the different breeds of cats and dogs were already provided.
+
+### Why Cats and Dogs?
+Admittedly, pursuing a semantic segmentation project centered around cats and dogs might seem unconventional. However, this choice presents a valuable opportunity to showcase the implementation of debugging sets in machine learning models. Additionally, it allows us to address specific challenges easily such as varied lighting conditions and diverse breeds present in the dataset, which are crucial factors influencing model performance.
+
+### Objectives:
+- Implement debugging set
+- ML Experiment Tracking
+- Data Versioning
+- Model deployment
+- Annotating new data using label studio
+- Continuous Integration Continuous Deployment
+
+## Environment variables
+Make sure you are inside the project directory
+```shell
+export MLFLOW_TRACKING_URI=<mlflow_tracking_uri> \
+export MLFLOW_TRACKING_USERNAME=<username> \
+export MLFLOW_TRACKING_PASSWORD=<password> \
+export PYTHONPATH=$(pwd)
+```
+
+## Usage
+
+### 1. Generate preprocessed data for training from raw and new data
+```shell
+python src/data/make_dataset.py
+```
+</br>
+
+Generated Preprocessed Data Folder Structure
+```
+data/
+├──── raw/
+└──── preprocessed/ 
+        ├── train_set
+        │   ├── images
+        │   └── masks
+        │
+        ├── valid_set
+        │   ├── images
+        │   └── masks
+        │
+        ├── test_set
+        │   ├── images
+        │   └── masks
+        │
+        └── debugging_set
+```
+</br>
+
+Debugging set was split this way for easy generation of report regarding the model performance
+```
+debugging_set/
+├──── cats/
+│       ├── images
+│       │       ├── cat_breed_1.jpg
+│       │       ├── cat_breed_2.jpg
+│       │       ├── cat_breed_3.jpg
+│       │       └── ...
+│       │
+│       └── masks
+│               ├── cat_breed_1.png
+│               ├── cat_breed_2.png
+│               ├── cat_breed_3.png
+│               └── ...
+│
+├──── dogs/
+│       ├── images
+│       │       ├── dog_breed_1.jpg
+│       │       ├── dog_breed_2.jpg
+│       │       ├── dog_breed_3.jpg
+│       │       └── ...
+│       │
+│       └── masks
+│               ├── dog_breed_1.png
+│               ├── dog_breed_2.png
+│               ├── dog_breed_3.png
+│               └── ...
+│
+└──── cats_and_dogs/
+        ├── images
+        │       ├── cat_and_dog_1.jpg
+        │       ├── cat_and_dog_2.jpg
+        │       ├── cat_and_dog_3.jpg
+        |       └── ...
+        │
+        └── masks
+                ├── cat_and_dog_1.png
+                ├── cat_and_dog_2.png
+                ├── cat_and_dog_3.png
+                └── ... 
+```
+
+
+### 2. Training
+
+1. train model using setup located in config directory
+```shell
+python src/models/train_model.py --train_args setup.json
+```
+
+2. train existing model in mlflow artifacts
+```shell
+python src/models/train_model.py --train_args setup.json --model_uri runs:/<run_id>/model
+```
+
+3. fine tune existing model by setting pretrained model layers to trainable
+```shell
+python src/models/train_model.py --train_args setup.json --model_uri runs:/<run_id>/model'
+```
+
+### 3. Prediction
+plot of the prediction will be shown temporarily as save_path is not yet implemented
+```shell
+python src/models/predict_model.py --model_uri runs:/<run_id>/model --img_url image_url
+```
+<br/>
+
+example run predicting cat and dog in the same image
+```shell
+python src/models/predict_model.py --img_url https://khpet.com/cdn/shop/articles/introducing-a-dog-to-a-cat-home_800x800.jpg?v=1593020063 --model_uri runs:/<run_id>/model
+```
+![prediction_output](https://i.imgur.com/O8A6lYH.png)
+
+The prediction shown above is a great example on the importance of using debugging set so we can see the model's performance on difference scenario since the model is only trained on single cat or dog per image. The model is clearly underperforming once both classes are present in a single image.
+
+## Debugging
+
+The images below are the figures generated on how the model performs in specific conditions. The model used for this report is VGG16 UNet trained for a single epoch.
+
+![cats and dogs](https://i.imgur.com/XH8TY2E.png)
+
+![cat breeds](https://i.imgur.com/zvP6gJk.png)
+
+We use the figures above to evaluate on how we can further improve our model by feeding new data on conditions it performs poorly. (The results above are just an example since it was only trained for a single epoch and also dog breeds were not included as of this moment due to the large number of masks needed to be prepared).
 
 
 
-Instructions
+Debugging set can be obtained from the training set or new custom examples which we would like to monitor such as:
+- single cats
+- single dogs
+- combination of cat(s) and dog(s)
+- cats and/or dogs in different kinds of environment such as dark area, noisy images like when they are in forest or several other stuff going on
+
+For further information regarding debugging set, Cassie Kozyrkov has a great video about it on [youtube](https://www.youtube.com/watch?v=BynidpRMZkc).
+
+## Experiment Tracking
+- Use the mlflow tracking provided by dagshub
+
+## Data Version Control
+- Use DVC S3 to prevent issues when doing `dvc push` (may be dagshub specific problem)
+
+## Data used
+
+### Cat vs Dog Dataset
+[OXFORD-IIIT PET Dataset](https://www.robots.ox.ac.uk/~vgg/data/pets/)
+
+The base dataset used is the PET Dataset from Oxford. Each of the mask does not differentiate cats or dogs only the border and if a cat or dog exists within that mask.
+
+![pet dataset image](https://www.robots.ox.ac.uk/~vgg/data/pets/pet_annotations.jpg)
+
+
+
+### Debugging dataset
+
+Data used for manual evaluation of model performance
+
+- [cat breeds](https://www.whiskas.com.ph/cat-breeds)
+- [dog breeds](https://www.akc.org/dog-breeds/)
+
 ------------
-1. Clone the repo.
-2. Run `make dirs` to create the missing parts of the directory structure described below.
-3. *Optional:* Run `make virtualenv` to create a python virtual environment. Skip if using conda or some other env manager.
-   1. Run `source env/bin/activate` to activate the virtualenv.
-4. Run `make requirements` to install required python packages.
-5. Put the raw data in `data/raw`.
-6. To save the raw data to the DVC cache, run `dvc add data/raw`
-7. Edit the code files to your heart's desire.
-8. Process your data, train and evaluate your model using `dvc repro` or `make reproduce`
-9. To run the pre-commit hooks, run `make pre-commit-install`
-10. For setting up data validation tests, run `make setup-setup-data-validation`
-11. For **running** the data validation tests, run `make run-data-validation`
-12. When you're happy with the result, commit files (including .dvc files) to git.
-
-Project Organization
-------------
-
-    ├── LICENSE
-    ├── Makefile           <- Makefile with commands like `make dirs` or `make clean`
-    ├── README.md          <- The top-level README for developers using this project.
-    ├── data
-    │   ├── processed      <- The final, canonical data sets for modeling.
-    │   ├── raw.dvc        <- DVC file that tracks the raw data
-    │   └── raw            <- The original, immutable data dump
-    │
-    ├── models             <- Trained and serialized models, model predictions, or model summaries
-    │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
-    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
-    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-    │   └── figures        <- Generated graphics and figures to be used in reporting
-    │   └── metrics.txt    <- Relevant metrics after evaluating the model.
-    │   └── training_metrics.txt    <- Relevant metrics from training the model.
-    │
-    ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-    │                         generated with `pip freeze > requirements.txt`
-    │
-    ├── setup.py           <- Makes project pip installable (pip install -e .) so src can be imported
-    ├── src                <- Source code for use in this project.
-    │   ├── __init__.py    <- Makes src a Python module
-    │   │
-    │   ├── data           <- Scripts to download or generate data
-    │   │   ├── great_expectations  <- Folder containing data integrity check files
-    │   │   ├── make_dataset.py
-    │   │   └── data_validation.py  <- Script to run data integrity checks
-    │   │
-    │   ├── models         <- Scripts to train models and then use trained models to make
-    │   │   │                 predictions
-    │   │   ├── predict_model.py
-    │   │   └── train_model.py
-    │   │
-    │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │       └── visualize.py
-    │
-    ├── .pre-commit-config.yaml  <- pre-commit hooks file with selected hooks for the projects.
-    ├── dvc.lock           <- The version definition of each dependency, stage, and output from the 
-    │                         data pipeline.
-    └── dvc.yaml           <- Defining the data pipeline stages, dependencies, and outputs.
-
-
---------
-
-<p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
-
-
----
-
-To create a project like this, just go to https://dagshub.com/repo/create and select the **Cookiecutter DVC** project template.
-
-Made with 🐶 by [DAGsHub](https://dagshub.com/).

@@ -1,0 +1,28 @@
+{
+    "setup": {
+        "model": "VGG16-Unet",
+        "loss": "DiceLoss",
+        "metrics": ["IoU","sensitivity","specificity"],
+        "n_classes": 3,
+        "random_seed": 5,
+        "train_split": 0.7,
+        "valid_split": 0.2,
+        "test_split": 0.1
+    },
+    "params": {
+        "learning_rate": 1e-5,
+        "batch_size": 16,
+        "epochs": 1
+    },
+    "tags": {
+        "base_model": "UNet",
+        "encoder": "VGG16",
+        "loss": "DiceLoss gamma 1",
+        "data split": "imbalance",
+        "trained on": "rtx4060 8gb"
+    },
+    "experiment": {
+        "experiment_name": "Pet Semantic Segmentation",
+        "run_name": "local test run for docker build"
+    }
+}

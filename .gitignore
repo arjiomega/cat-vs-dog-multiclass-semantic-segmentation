@@ -87,3 +87,9 @@ coverage.xml
 
 # Mypy cache
 .mypy_cache/
+
+# Experiments
+mlruns/
+
+# Generated figures
+reports/figures/
